@@ -4,38 +4,55 @@ import Authlayout from "../layouts/Authlayout";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Home from "../pages/Home/Home";
-import TopPartners from "../components/TopPartners";
+import PartnerDetails from "../pages/PartnerDetails";
+import PrivateRoute from "../provider/PrivateRoute";
+
 
 const Router = createBrowserRouter([
     {
         path: "/",
-        element:<HomeLayout/>,
-        children:[
+        element: <HomeLayout />,
+        children: [
             {
-                path:"", element:<Home/>
+                path: "", 
+                element: <Home />
             },
             {
-                path:"top-partners", element:<TopPartners/>
-            },
+                // Dynamic Route for Partner Details
+                path: "partner/:id", 
+                element: (
+                    <PrivateRoute>
+                        <PartnerDetails />
+                    </PrivateRoute>
+                ),
+                // Data fetch korar jonno loader
+                loader: async ({ params }) => {
+                    const res = await fetch("/partners.json");
+                    const data = await res.json();
+                    const singlePartner = data.find(p => p.id == params.id);
+                    return singlePartner;
+                }
+            }
         ]
     },
 
-    // // Auth Routes
+    // Auth Routes
     {
-        path:"/auth",
-        element:<Authlayout/>,
-        children:[
-            {path:"login",element:<Login/>},
-            {path:"register",element:<Register/>}
+        path: "/auth",
+        element: <Authlayout />,
+        children: [
+            { path: "login", element: <Login /> },
+            { path: "register", element: <Register /> }
         ]
     },
     {
-        path:"*",
-        element: <div>404 Not Found</div>
+        path: "*",
+        element: (
+            <div className="min-h-screen flex items-center justify-center text-3xl font-bold text-red-500">
+                404 Not Found
+            </div>
+        )
     }
-])
+]);
 
-export  default Router;
-
-
-    
+export default Router;

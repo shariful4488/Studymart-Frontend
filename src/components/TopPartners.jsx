@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react"; 
 import { FaStar, FaMapMarkerAlt, FaBookOpen } from "react-icons/fa";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router"; 
+import { AuthContext } from "../provider/AuthProvider"; 
 
 const TopPartners = () => {
   const [partners, setPartners] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  const { user } = useContext(AuthContext); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("/partners.json")
@@ -18,6 +22,15 @@ const TopPartners = () => {
         setLoading(false);
       });
   }, []);
+
+
+  const handleViewProfile = (id) => {
+    if (user) {
+      navigate(`/partner/${id}`);
+    } else {
+      navigate("/auth/login");
+    }
+  };
 
   if (loading) {
     return (
@@ -44,7 +57,7 @@ const TopPartners = () => {
           </Link>
         </div>
 
-        {/* 6 Cards Grid */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {partners.map((partner) => (
             <div 
@@ -81,8 +94,13 @@ const TopPartners = () => {
                 <span className="flex items-center gap-1.5 text-slate-400 text-xs font-semibold uppercase tracking-wider">
                   <FaMapMarkerAlt className="text-indigo-400" /> {partner.location}
                 </span>
-                <button className="text-indigo-600 font-bold text-sm hover:underline underline-offset-4">
-                  Profile →
+                
+                
+                <button 
+                  onClick={() => handleViewProfile(partner.id)}
+                  className="text-indigo-600 font-bold text-sm hover:underline underline-offset-4"
+                >
+                  View Profile →
                 </button>
               </div>
             </div>
