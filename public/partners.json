@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "name": "Arif Ahmed",
+    "subject": "Web Development",
+    "rating": 4.8,
+    "image": "https://i.pravatar.cc/150?u=1",
+    "location": "Dhaka, BD",
+    "bio": "React and Node.js enthusiast. Looking for someone to build MERN projects with."
+  },
+  {
+    "id": 2,
+    "name": "Sara Khan",
+    "subject": "Data Science",
+    "rating": 4.9,
+    "image": "https://i.pravatar.cc/150?u=2",
+    "location": "Chittagong, BD",
+    "bio": "Python expert. Let's practice machine learning algorithms and data visualization."
+  },
+  {
+    "id": 3,
+    "name": "Tanvir Hasan",
+    "subject": "UI/UX Design",
+    "rating": 4.7,
+    "image": "https://i.pravatar.cc/150?u=5",
+    "location": "Sylhet, BD",
+    "bio": "Figma lover. Want to collaborate on case studies and modern mobile UI designs."
+  },
+  {
+    "id": 4,
+    "name": "Mehnaz Mim",
+    "subject": "Digital Marketing",
+    "rating": 4.6,
+    "image": "https://i.pravatar.cc/150?u=9",
+    "location": "Rajshahi, BD",
+    "bio": "SEO and SMM strategist. Let's discuss latest marketing trends and growth hacks."
+  },
+  {
+    "id": 5,
+    "name": "Rakib Hossain",
+    "subject": "Cyber Security",
+    "rating": 4.5,
+    "image": "https://i.pravatar.cc/150?u=12",
+    "location": "Khulna, BD",
+    "bio": "Passionate about network security. Looking for a partner to solve CTF challenges."
+  },
+  {
+    "id": 6,
+    "name": "Zarin Tasnim",
+    "subject": "App Development",
+    "rating": 4.9,
+    "image": "https://i.pravatar.cc/150?u=4",
+    "location": "Barishal, BD",
+    "bio": "Building cross-platform apps with Flutter. Connect with me for app collaborations."
+  }
+]
