@@ -1,76 +1,112 @@
 import { useLoaderData } from "react-router";
-import { FaStar, FaMapMarkerAlt, FaBookOpen, FaEnvelope, FaWhatsapp } from "react-icons/fa";
+import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "../provider/AuthProvider";
+import Swal from "sweetalert2";
+import { FaUser, FaBook, FaMapMarkerAlt, FaEnvelope, FaClock } from "react-icons/fa";
 
 const PartnerDetails = () => {
   const partner = useLoaderData();
+  const { user } = useContext(AuthContext);
+
+  const handleSendRequest = async () => {
+    const connectionData = {
+      partnerId: partner._id,
+      partnerName: partner.name,
+      partnerEmail: partner.email,
+      senderEmail: user?.email,
+      senderName: user?.displayName,
+      subject: partner.subject,
+      status: "Pending"
+    };
+
+    try {
+     
+      const res = await axios.post('http://localhost:5000/connections', connectionData);
+      
+      if (res.data.insertedId) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Request Sent!',
+          text: `You have successfully sent a request to ${partner.name}`,
+          confirmButtonColor: '#4F46E5'
+        });
+      }
+    } catch (error) {
+        console.error(error);
+        Swal.fire('Error', 'Failed to send request', 'error');
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-16">
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-indigo-50 flex flex-col md:flex-row">
-          
-          {/* Left Side: Profile Image & Basic Info */}
-          <div className="md:w-2/5 bg-indigo-600 p-12 text-center text-white flex flex-col items-center justify-center">
-            <div className="relative mb-6">
-              <img 
-                src={partner.image} 
-                className="w-48 h-48 rounded-[2.5rem] object-cover border-8 border-white/10 shadow-2xl" 
-                alt={partner.name} 
-              />
-              <div className="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-4 border-indigo-600"></div>
+    <div className="min-h-screen bg-slate-50 py-12 px-4">
+      <div className="max-w-4xl mx-auto bg-white rounded-[2.5rem] shadow-xl overflow-hidden border border-indigo-50">
+        
+        
+        <div className="bg-indigo-600 p-10 text-white flex flex-col md:flex-row items-center gap-8">
+          <img 
+            src={partner.profileimage} 
+            alt={partner.name} 
+            className="w-40 h-40 rounded-3xl object-cover border-4 border-white/20 shadow-2xl" 
+          />
+          <div className="text-center md:text-left">
+            <h2 className="text-4xl font-black mb-2">{partner.name}</h2>
+            <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+              <span className="bg-white/20 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider">
+                {partner.studyMode}
+              </span>
+              <span className="bg-white/20 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider">
+                {partner.experienceLevel} Level
+              </span>
             </div>
-            <h2 className="text-3xl font-black mb-2">{partner.name}</h2>
-            <div className="flex items-center gap-2 bg-white/20 px-4 py-1 rounded-full text-sm font-bold">
-              <FaStar className="text-yellow-400" /> {partner.rating} Rating
+          </div>
+        </div>
+
+       
+        <div className="p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold text-slate-800 border-b pb-4">Contact Information</h3>
+            <div className="flex items-center gap-4 text-slate-600">
+              <FaEnvelope className="text-indigo-500 text-xl" />
+              <span className="font-medium">{partner.email}</span>
+            </div>
+            <div className="flex items-center gap-4 text-slate-600">
+              <FaMapMarkerAlt className="text-indigo-500 text-xl" />
+              <span className="font-medium">{partner.location}</span>
             </div>
           </div>
 
-          {/* Right Side: Detailed Info */}
-          <div className="md:w-3/5 p-12 space-y-8">
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold text-slate-800 border-b pb-4">Study Details</h3>
+            <div className="flex items-center gap-4 text-slate-600">
+              <FaBook className="text-indigo-500 text-xl" />
+              <span className="font-medium">Subject: {partner.subject}</span>
+            </div>
+            <div className="flex items-center gap-4 text-slate-600">
+              <FaClock className="text-indigo-500 text-xl" />
+              <span className="font-medium">Available: {partner.availabilityTime}</span>
+            </div>
+          </div>
+
+         
+          <div className="md:col-span-2 bg-indigo-50 p-6 rounded-3xl flex justify-between items-center">
             <div>
-              <h3 className="text-sm font-black text-indigo-600 uppercase tracking-widest mb-2">Subject of Interest</h3>
-              <div className="flex items-center gap-3 text-2xl font-bold text-slate-800">
-                <FaBookOpen className="text-indigo-500" /> {partner.subject}
-              </div>
+              <p className="text-indigo-600 font-bold text-lg">Current Study Partners</p>
+              <p className="text-slate-500">Already working with {partner.partnerCount || 0} students</p>
             </div>
+            <div className="text-4xl font-black text-indigo-600">
+              {partner.partnerCount || 0}
+            </div>
+          </div>
 
-            <div>
-              <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-2">About Partner</h3>
-              <p className="text-slate-600 leading-relaxed italic bg-slate-50 p-6 rounded-2xl border-l-4 border-indigo-500">
-                "{partner.bio}"
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 text-xl">
-                  <FaMapMarkerAlt />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-400 font-bold uppercase">Location</p>
-                  <p className="font-bold text-slate-700">{partner.location}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 text-xl">
-                  <FaEnvelope />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-400 font-bold uppercase">Response Rate</p>
-                  <p className="font-bold text-slate-700">Quick (within 1 hr)</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-6">
-              <button className="flex-1 btn bg-indigo-600 hover:bg-indigo-700 text-white border-none h-14 rounded-2xl font-bold text-lg shadow-xl shadow-indigo-100 transition-all active:scale-95">
-                Send Request
-              </button>
-              <button className="btn btn-outline border-slate-200 text-slate-600 h-14 rounded-2xl px-8 hover:bg-slate-50 transition-all">
-                <FaWhatsapp className="text-xl text-green-500" />
-              </button>
-            </div>
+         
+          <div className="md:col-span-2">
+            <button 
+              onClick={handleSendRequest}
+              className="w-full py-5 bg-slate-900 text-white text-xl font-bold rounded-2xl hover:bg-indigo-600 transition-all shadow-xl shadow-slate-200 hover:shadow-indigo-100"
+            >
+              Send Partner Request
+            </button>
           </div>
         </div>
       </div>
