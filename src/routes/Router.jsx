@@ -28,7 +28,7 @@ const Router = createBrowserRouter([
                     </PrivateRoute>
                 ),
                 loader: async ({ params }) => {
-                    const res = await fetch(`http://localhost:5000/partner/${params.id}`);
+                    const res = await fetch(`https://studymate-backend-two.vercel.app/partner/${params.id}`);
                     const data = await res.json();
                     return data;
                 }

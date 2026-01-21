@@ -22,7 +22,7 @@ const PartnerDetails = () => {
 
     try {
      
-      const res = await axios.post('http://localhost:5000/connections', connectionData);
+      const res = await axios.post('https://studymate-backend-two.vercel.app/connections', connectionData);
       
       if (res.data.insertedId) {
         Swal.fire({

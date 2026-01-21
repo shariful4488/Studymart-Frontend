@@ -24,7 +24,7 @@ const CreatePartner = () => {
         };
 
         try {
-            const res = await axios.post('http://localhost:5000/partners', profileData);
+            const res = await axios.post('https://studymate-backend-two.vercel.app/partners', profileData);
             if (res.data.insertedId) {
                 Swal.fire({
                     icon: 'success',

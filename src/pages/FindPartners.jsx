@@ -15,7 +15,7 @@ const FindPartners = () => {
       setLoading(true);
       try {
         
-        const { data } = await axios.get(`http://localhost:5000/partners?search=${search}&sort=${sort}`);
+        const { data } = await axios.get(`https://studymate-backend-two.vercel.app/partners?search=${search}&sort=${sort}`);
         setPartners(data);
         setLoading(false);
       } catch (error) {

@@ -14,7 +14,7 @@ const MyConnections = () => {
     }, [user?.email]);
 
     const fetchConnections = async () => {
-        const { data } = await axios.get(`http://localhost:5000/my-connections/${user?.email}`);
+        const { data } = await axios.get(`https://studymate-backend-two.vercel.app/my-connections/${user?.email}`);
         setConnections(data);
     };
 
@@ -27,7 +27,7 @@ const MyConnections = () => {
         };
 
         try {
-            const res = await axios.put(`http://localhost:5000/connection-update/${selectedConn._id}`, updatedData);
+            const res = await axios.put(`https://studymate-backend-two.vercel.app/connection-update/${selectedConn._id}`, updatedData);
             if (res.data.modifiedCount > 0) {
                 setConnections(connections.map(c => c._id === selectedConn._id ? { ...c, ...updatedData } : c));
                 Swal.fire("Updated!", "Info updated successfully", "success");
@@ -47,7 +47,7 @@ const MyConnections = () => {
             confirmButtonText: "Yes, delete!"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const res = await axios.delete(`http://localhost:5000/connection/${id}`);
+                const res = await axios.delete(`https://studymate-backend-two.vercel.app/connection/${id}`);
                 if (res.data.deletedCount > 0) {
                     setConnections(connections.filter(c => c._id !== id));
                     Swal.fire("Deleted!", "", "success");

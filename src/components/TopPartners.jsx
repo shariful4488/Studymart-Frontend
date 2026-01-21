@@ -13,7 +13,7 @@ const TopPartners = () => {
   useEffect(() => {
     const fetchTopPartners = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/partners");
+        const res = await axios.get("https://studymate-backend-two.vercel.app/partners");
         setPartners(res.data.slice(0, 6)); 
         setLoading(false);
       } catch (err) {
