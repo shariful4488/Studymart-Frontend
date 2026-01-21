@@ -1,16 +1,29 @@
-# React + Vite
+#  StudyMate - Study Partner Finder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+StudyMate holo ekti study partner finding platform, jekhane students-ra tader subject onujayi partner khuje nite pare, connection request pathate pare ebong tader study session-gulo manage korte pare.
 
-Currently, two official plugins are available:
+##  Live Links
+- **Frontend:** [Tomar-Firebase-Link-Ekhane]
+- **Backend:** [https://studymate-backend-two.vercel.app/](https://studymate-backend-two.vercel.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+##  Tech Stack
+- **Frontend:** React.js, Vite, Tailwind CSS, Firebase Auth
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB Atlas
+- **Deployment:** Firebase (Frontend), Vercel (Backend)
 
-## React Compiler
+## ✨ Core Features
+- **User Authentication:** Google login and email-based authentication.
+- **Partner Search & Filter:** Subject wise search and experience-based sorting (Expert/Beginner).
+- **CRUD Operations:** Partner profile toiri, update ebong delete korar subidha.
+- **Connection Management:** Partner request pathano ebong connection status update (Pending/Accepted).
+- **Responsive Design:** Mobile ebong Desktop bondhovobho UI.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+##  How to run locally
+1. Clone the repo: `git clone [tomar-repo-link]`
+2. Install dependencies: `npm install`
+3. Create a `.env` file and add your MongoDB credentials.
+4. Run the project: `npm run dev` (for frontend) or `node index.js` (for backend).
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+##  License
+This project is licensed under the ISC License.
