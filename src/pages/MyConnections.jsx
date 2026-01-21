@@ -2,122 +2,119 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { FaTrashAlt, FaUserGraduate, FaEnvelope, FaBook } from "react-icons/fa";
+import { FaTrashAlt, FaEdit, FaCheckCircle, FaTimes } from "react-icons/fa";
 
 const MyConnections = () => {
     const { user } = useContext(AuthContext);
     const [connections, setConnections] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [selectedConn, setSelectedConn] = useState(null); 
 
     useEffect(() => {
-        if (user?.email) {
-            fetchConnections();
-        }
+        if (user?.email) fetchConnections();
     }, [user?.email]);
 
     const fetchConnections = async () => {
+        const { data } = await axios.get(`http://localhost:5000/my-connections/${user?.email}`);
+        setConnections(data);
+    };
+
+   
+    const handleUpdateSubmit = async (e) => {
+        e.preventDefault();
+        const updatedData = {
+            partnerName: e.target.name.value,
+            subject: e.target.subject.value
+        };
+
         try {
-            const { data } = await axios.get(`http://localhost:5000/my-connections/${user?.email}`);
-            setConnections(data);
-            setLoading(false);
+            const res = await axios.put(`http://localhost:5000/connection-update/${selectedConn._id}`, updatedData);
+            if (res.data.modifiedCount > 0) {
+                setConnections(connections.map(c => c._id === selectedConn._id ? { ...c, ...updatedData } : c));
+                Swal.fire("Updated!", "Info updated successfully", "success");
+                setSelectedConn(null); // Modal close
+            }
         } catch (error) {
-            console.error("Error fetching connections:", error);
-            setLoading(false);
+            Swal.fire("Error", "Update failed", "error");
         }
     };
 
-    // Delete Operation
+    // Delete Logic
     const handleDelete = async (id) => {
         Swal.fire({
             title: "Are you sure?",
-            text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#4F46E5",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
+            confirmButtonText: "Yes, delete!"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                try {
-                    const res = await axios.delete(`http://localhost:5000/connection/${id}`);
-                    if (res.data.deletedCount > 0) {
-                        Swal.fire("Deleted!", "Your connection has been deleted.", "success");
-                        // UI theke remove kora
-                        const remaining = connections.filter(conn => conn._id !== id);
-                        setConnections(remaining);
-                    }
-                } catch (error) {
-                    Swal.fire("Error", "Failed to delete", "error");
+                const res = await axios.delete(`http://localhost:5000/connection/${id}`);
+                if (res.data.deletedCount > 0) {
+                    setConnections(connections.filter(c => c._id !== id));
+                    Swal.fire("Deleted!", "", "success");
                 }
             }
         });
     };
 
-    if (loading) return <div className="text-center py-20"><span className="loading loading-spinner loading-lg"></span></div>;
-
     return (
-        <div className="max-w-7xl mx-auto px-6 py-12">
-            <h2 className="text-3xl font-black text-slate-800 mb-8">My <span className="text-indigo-600">Connections</span></h2>
-
-            <div className="overflow-x-auto bg-white rounded-3xl shadow-sm border border-slate-100">
+        <div className="max-w-6xl mx-auto py-12 px-6">
+            <h2 className="text-3xl font-black mb-8">My <span className="text-indigo-600">Connections</span></h2>
+            
+            <div className="overflow-x-auto bg-white rounded-3xl shadow-sm border">
                 <table className="table w-full">
-                    {/* Table Head */}
-                    <thead className="bg-slate-50 text-slate-600">
-                        <tr>
-                            <th className="py-5 pl-8">Partner Details</th>
+                    <thead>
+                        <tr className="bg-slate-50">
+                            <th>Partner Name</th>
                             <th>Subject</th>
                             <th>Status</th>
-                            <th className="text-center">Action</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {connections.length > 0 ? (
-                            connections.map((conn) => (
-                                <tr key={conn._id} className="hover:bg-slate-50 transition-colors">
-                                    <td className="pl-8 py-5">
-                                        <div className="flex items-center gap-4">
-                                            <div className="bg-indigo-100 p-3 rounded-xl text-indigo-600">
-                                                <FaUserGraduate />
-                                            </div>
-                                            <div>
-                                                <p className="font-bold text-slate-800">{conn.partnerName}</p>
-                                                <p className="text-xs text-slate-400 flex items-center gap-1">
-                                                    <FaEnvelope /> {conn.partnerEmail}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="flex items-center gap-2 text-slate-600 font-medium">
-                                            <FaBook className="text-indigo-400" />
-                                            {conn.subject}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span className="badge badge-ghost font-bold text-indigo-600 bg-indigo-50 border-none px-4 py-3">
-                                            {conn.status}
-                                        </span>
-                                    </td>
-                                    <td className="text-center">
-                                        <button 
-                                            onClick={() => handleDelete(conn._id)}
-                                            className="btn btn-ghost text-red-500 hover:bg-red-50 rounded-xl"
-                                        >
-                                            <FaTrashAlt size={18} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="4" className="text-center py-10 text-slate-400 italic font-medium">
-                                    No connections found. Start requesting study partners!
+                        {connections.map(conn => (
+                            <tr key={conn._id}>
+                                <td className="font-bold">{conn.partnerName}</td>
+                                <td>{conn.subject}</td>
+                                <td><span className="badge badge-ghost">{conn.status}</span></td>
+                                <td className="flex gap-2">
+                                    <button onClick={() => setSelectedConn(conn)} className="btn btn-sm bg-indigo-100 text-indigo-600 border-none">
+                                        <FaEdit />
+                                    </button>
+                                    <button onClick={() => handleDelete(conn._id)} className="btn btn-sm bg-red-100 text-red-600 border-none">
+                                        <FaTrashAlt />
+                                    </button>
                                 </td>
                             </tr>
-                        )}
+                        ))}
                     </tbody>
                 </table>
             </div>
+
+           
+            {selectedConn && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative animate-in zoom-in duration-200">
+                        <button onClick={() => setSelectedConn(null)} className="absolute top-6 right-6 text-slate-400 hover:text-red-500">
+                            <FaTimes size={20} />
+                        </button>
+                        <h3 className="text-2xl font-black mb-6">Update <span className="text-indigo-600">Connection</span></h3>
+                        
+                        <form onSubmit={handleUpdateSubmit} className="space-y-4">
+                            <div className="form-control">
+                                <label className="label font-bold text-slate-600">Partner Name</label>
+                                <input type="text" name="name" defaultValue={selectedConn.partnerName} className="input input-bordered rounded-xl" required />
+                            </div>
+                            <div className="form-control">
+                                <label className="label font-bold text-slate-600">Subject</label>
+                                <input type="text" name="subject" defaultValue={selectedConn.subject} className="input input-bordered rounded-xl" required />
+                            </div>
+                            <button type="submit" className="btn bg-indigo-600 hover:bg-indigo-700 text-white w-full rounded-xl border-none mt-4">
+                                Save Changes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
